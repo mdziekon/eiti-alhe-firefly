@@ -1,3 +1,6 @@
+library(plotly)
+library(hydroPSO)
+
 getIntensity <- function(goal, x, pars) {
     -1 * goal(x)
 }
