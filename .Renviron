@@ -1,0 +1,3 @@
+## Example ~/.Renviron on Unix
+R_LIBS=~/R/library
+PAGER=/usr/local/bin/less
