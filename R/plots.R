@@ -60,8 +60,42 @@ plotFirefly <- function(algorithm, goal, dim, pars) {
 #     0.1
 # )
 plotGoal <- function(goalFunc, min, max, res) {
-    data = goalFunc(min, max, res)
+    data = func2matrix(goalFunc, min, max, res)
 
     plotly::plot_ly(x = data$axis, y = data$axis, z = data$result, type = "surface")
 }
+
+# Converts values of goal function to matrix.
+func2matrix <- function(goalFunc, min, max, res) {
+    dist <- (max - min)
+    sizes <- (dist * (1 / res)) + 1
+
+    result <- matrix(, ncol = sizes, nrow = sizes)
+    axis <- numeric(sizes)
+
+    i <- min
+    a <- 1
+    while(i <= max) {
+        j <- min
+        b <- 1
+
+        while(j <= max) {
+            result[a, b] =  goalFunc(c(i, j))
+
+            j <- j + res
+            b <- b + 1
+        }
+
+        axis[a] = i
+
+        i <- i + res
+        a <- a + 1
+    }
+
+    list(result = result, axis = axis)
+}
+
+
+
+
 
