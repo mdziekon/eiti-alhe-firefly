@@ -71,13 +71,16 @@ move_fflies <- function(goal, fflies_current, fflies_prev, coefficients, ranges)
     dimensions <- dims[2] - 1
 
     for(i in 1:fflies_count) {
-        moved = 0
+        moved <- FALSE
 
         for(j in 1:fflies_count) {
-            moved <- moved | move_fly(fflies_current[i, ], fflies_prev[j, ], coefficients, ranges)
+            move_result <- move_fly(fflies_current[i, ], fflies_prev[j, ], coefficients, ranges)
+
+            moved <- moved || move_result$moved
+            fflies_current[i, ] <- move_result$fly
         }
 
-        if (moved == 0) {
+        if (moved == FALSE) {
             # Force random move when not moved at all
             fflies_current[i, 1:dimensions] <- fflies_current[i, 1:dimensions] + randomize_move_vector(dimensions, coefficients)
 
@@ -105,12 +108,17 @@ move_fly <- function(fly_current, fly_adjacent, coefficients, ranges) {
     dimensions <- length(fly_current) - 1
     value_idx <- dimensions + 1
 
+    result = list(
+        moved = FALSE,
+        fly = fly_current
+    );
+
     # Implemented as minimalization problem solver,
     # therefore when "current" firefly has higher value than the adjacent one,
     # it should be moved
     if (fly_current[value_idx] <= fly_adjacent[value_idx]) {
         # Jump out early
-        return(0)
+        return(result)
     }
 
     distance <- euclidean_distance(fly_current, fly_adjacent)
@@ -132,7 +140,12 @@ move_fly <- function(fly_current, fly_adjacent, coefficients, ranges) {
         }
     }
 
-    return(1)
+    result = list(
+        moved = TRUE,
+        fly = fly_current
+    )
+
+    return(result)
 }
 
 randomize_move_vector <- function(dimensions, coefficients) {
