@@ -84,16 +84,7 @@ move_fflies <- function(goal, fflies_current, fflies_prev, coefficients, ranges)
             # Force random move when not moved at all
             fflies_current[i, 1:dimensions] <- fflies_current[i, 1:dimensions] + randomize_move_vector(dimensions, coefficients)
 
-            # Safeguard against moving out of ranges
-            for(k in 1:dimensions) {
-                if (fflies_current[i, k] > ranges[[k]]$max) {
-                    fflies_current[i, k] <- ranges[[k]]$max
-                }
-
-                if (fflies_current[i, k] < ranges[[k]]$min) {
-                    fflies_current[i, k] <- ranges[[k]]$min
-                }
-            }
+            fflies_current[i, ] <- apply_bounds(fflies_current[i, ], ranges)
         }
 
         fflies_current[i, dimensions + 1] <- goal(fflies_current[i, 1:dimensions])
@@ -129,16 +120,7 @@ move_fly <- function(fly_current, fly_adjacent, coefficients, ranges) {
 
     fly_current[1:dimensions] <- fly_current[1:dimensions] + result
 
-    # Safeguard against moving out of ranges
-    for(k in 1:dimensions) {
-        if (fly_current[k] > ranges[[k]]$max) {
-            fly_current[k] <- ranges[[k]]$max
-        }
-
-        if (fly_current[k] < ranges[[k]]$min) {
-            fly_current[k] <- ranges[[k]]$min
-        }
-    }
+    fly_current <- apply_bounds(fly_current, ranges)
 
     result = list(
         moved = TRUE,
@@ -194,4 +176,21 @@ calc_dimension_move <- function(fly_left, fly_right, attraction) {
     }
 
     return(vector)
+}
+
+apply_bounds <- function(fly, ranges) {
+    dimensions <- length(fly) - 1
+
+    # Safeguard against moving out of ranges
+    for(k in 1:dimensions) {
+        if (fly[k] > ranges[[k]]$max) {
+            fly[k] <- ranges[[k]]$max
+        }
+
+        if (fly[k] < ranges[[k]]$min) {
+            fly[k] <- ranges[[k]]$min
+        }
+    }
+
+    return(fly)
 }
