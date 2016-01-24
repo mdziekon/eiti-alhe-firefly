@@ -1,7 +1,7 @@
-source("R/meta_scheme.R")
+source("R/ffa_meta_scheme.R")
 
-ffa <- function (...) {
-    # ffa(goal = ..., dimensions = ..., params = list(...))
+ffa_meta <- function (...) {
+    # ffa_meta(goal = ..., dimensions = ..., params = list(...))
     # goal - goal function
     # dimensions - number of dimensions of the problem to solve
     # params - list of additional parameters
