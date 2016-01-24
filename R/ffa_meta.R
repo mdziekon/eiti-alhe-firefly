@@ -77,6 +77,17 @@ ffa_meta <- function (...) {
         end = historyPop(run_history, fflies_count)
     );
 
+    p <- NULL
+    if (dimensions == 2)
+    {
+        p <- list(
+            init = prepareData(result$init),
+            end = prepareData(result$end),
+            mode = 2,
+            ranges = ranges
+        )
+    }
+
     best_idx <- 1
     best_val <- result$end[[best_idx]]$quality
     for(i in 1:length(result$end)) {
@@ -88,9 +99,24 @@ ffa_meta <- function (...) {
 
     final_result <- list(
         x = result$end[[best_idx]]$coordinates,
-        y = best_val
+        y = best_val,
+        plot = p
     )
 
     # Return best point in the last population state
     return(final_result)
+}
+
+prepareData <- function(data)
+{
+    n <- length(data);
+    mtx <- matrix(, nrow = n, ncol = 3)
+
+    for(i in 1:n) {
+        mtx[i, 1] = data[[i]]$coordinates[1]
+        mtx[i, 2] = data[[i]]$coordinates[2]
+        mtx[i, 3] = data[[i]]$quality
+    }
+
+    return(mtx)
 }
