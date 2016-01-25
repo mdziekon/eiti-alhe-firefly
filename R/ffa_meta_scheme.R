@@ -155,16 +155,18 @@ move_fly <- function(fly_current, fly_adjacent, coefficients, ranges, rand_scali
         fly_coords = fly_current$coordinates
     )
 
+    distance <- euclidean_distance(fly_current$coordinates, fly_adjacent$coordinates)
+    adj_intensity <- calc_intensity(distance, coefficients, fly_adjacent$quality)
+
     # Implemented as minimalization problem solver,
     # therefore when "current" firefly has higher value than the adjacent one,
     # it should be moved
 
-    if (fly_current$quality <= fly_adjacent$quality) {
+    if (fly_current$quality <= adj_intensity) {
         # Jump out early
         return (result)
     }
 
-    distance <- euclidean_distance(fly_current$coordinates, fly_adjacent$coordinates)
     attraction <- calc_attraction(distance, coefficients)
 
     result <- calc_moves(fly_current$coordinates, fly_adjacent$coordinates, attraction)
@@ -205,6 +207,20 @@ euclidean_distance <- function(fly_left_coords, fly_right_coords) {
     aggr <- sqrt(aggr)
 
     return(aggr)
+}
+
+calc_intensity <- function(distance, coefficients, quality) {
+    s <- -1
+    if (quality > 0)
+        s <- 1
+
+    intensity <- quality * exp((s * coefficients$gamma) * (distance * distance));
+
+    #     if (attraction < coefficients$attraction_min) {
+    #         attraction <- coefficients$attraction_min
+    #     }
+
+    return(intensity)
 }
 
 calc_attraction <- function(distance, coefficients) {

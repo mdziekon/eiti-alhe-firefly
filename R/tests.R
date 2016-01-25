@@ -7,35 +7,40 @@ test <- function(seed = 0, dim = 2, count = 15, iters = 10)
     print(r)
     set.seed(r)
 
-#     dim <- 2
-#     iters <- 20
-#     count <- 20
-
     result <- ffa_meta(
-        goal = multimodal,
+        goal =  multimodal,
         dimensions = dim,
         params = list(
             fflies_count = count,
             iterations = iters,
             coefficients = list(
                 absorption = 1,
+                gamma = 0.0,
                 randomness = 0.1,
                 attraction_base = 1,
                 attraction_min = 0.05
             ),
             ranges = list(
                 list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
+                list(min = -10, max = 10),
                 list(min = -10, max = 10)
             ),
-            rand_scaling = c(1, 1)
+            rand_scaling = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
         )
     )
 
-    title = "FFA for Multimodal Function"
+    title = "FFA for Multimodal Function with intensity function"
     popul = "( n = "
     iterStr = ", iters. = "
 
-    print(result$x)
+    print(paste(format(round(result$x, 5), nsmall = 6), collapse = " "))
     print(result$y)
 
     if (dim == 2)
